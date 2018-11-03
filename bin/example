@@ -1,0 +1,26 @@
+#! /usr/bin/vvp
+:ivl_version "0.9.7 " "(v0_9_7)";
+:vpi_time_precision + 0;
+:vpi_module "system";
+:vpi_module "v2005_math";
+:vpi_module "va_math";
+S_0x2202760 .scope module, "msync" "msync" 2 1;
+ .timescale 0 0;
+P_0x2214478 .param/l "h_back_porch" 2 7, +C4<01100000>;
+P_0x22144a0 .param/l "h_front_porch" 2 6, +C4<010000>;
+P_0x22144c8 .param/l "h_sync_pulse" 2 8, +C4<0110000>;
+P_0x22144f0 .param/l "h_whith" 2 5, +C4<01010000000>;
+P_0x2214518 .param/l "one_row" 2 10, +C4<01100100000>;
+P_0x2214540 .param/l "v_back_porch" 2 14, +C4<0110011100100000>;
+P_0x2214568 .param/l "v_front_porch" 2 13, +C4<01111101000000>;
+P_0x2214590 .param/l "v_sync_pulse" 2 15, +C4<011001000000>;
+P_0x22145b8 .param/l "v_whith" 2 12, +C4<0111100000>;
+v0x2214830_0 .net "draw", 0 0, C4<z>; 0 drivers
+v0x2244920_0 .net "h_sync_signal", 0 0, C4<z>; 0 drivers
+v0x22449c0_0 .net "pixelClock", 0 0, C4<z>; 0 drivers
+v0x2244a60_0 .net "v_sync_signal", 0 0, C4<z>; 0 drivers
+# The file index is used to find the file name in the following table.
+:file_names 3;
+    "N/A";
+    "<interactive>";
+    "src/msync.v";
