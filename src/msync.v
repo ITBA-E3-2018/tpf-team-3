@@ -31,7 +31,7 @@ parameter st_v_sync=6;
 
 
 
- reg[9:0] h_count=0;//contador de columnas 
+ reg[15:0] h_count=0;//contador de columnas y tambien utilizado para contar pulsos de clocks
  reg[8:0] v_count=0;//contador de filas
  reg[3:0] state=0;// estados de la fsm
 
@@ -63,7 +63,7 @@ parameter st_v_sync=6;
             end
         end
 
-         st_h_sync: begin
+        st_h_sync: begin
             h_sync_signal=1;
             if (h_count==(h_sync_pulse-1)) begin
                 state=st_h_bp;
@@ -71,16 +71,16 @@ parameter st_v_sync=6;
             end else begin
                 h_count=h_count+1;
             end
-         end
+        end
 
         st_h_bp: begin
             draw=0;
             h_sync_signal=0;
             if (h_count==(h_front_porch-1)) begin//termine de enviar la señal de sincronismo
+                h_count=0;
                 if(v_count==(v_whith-1))begin//chequeo si ya imprimi todas las filas
                     v_count=0;
                     state=st_v_fp;
-                    h_count=0;
                 end else begin//como no se imprimieron todas las filas vuelvo al comienzo
                     v_count=v_count+1;
                     state=st_printing_line;
@@ -91,6 +91,35 @@ parameter st_v_sync=6;
             end
         end
 
+        st_v_bp: begin
+            v_sync_signal=0;
+            if (h_count==(v_front_porch-1)) begin
+                state=st_h_sync;
+                h_count=0;
+            end else begin
+                h_count=h_count+1;
+            end
+        end
+        st_v_sync:begin
+            v_sync_signal=1;
+            if (h_count==(v_sync_pulse-1)) begin
+                state=st_v_bp;
+                h_count=0;
+            end else begin
+                h_count=h_count+1;
+            end 
+        end
+
+        st_v_bp:begin
+            v_sync_signal=0;
+            if (h_count==(v_back_porch-1)) begin
+                state=st_printing_line;
+                h_count=0;
+            end else begin
+                h_count=h_count+1;
+            end 
+        end
+        
         default: begin
         end
 
