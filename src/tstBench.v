@@ -1,5 +1,5 @@
 module tstBench;
-wire clock,hs,vs,d;
+wire clock,hs,vs,d,pix;
  wire[7:0] tth;
  wire[7:0] ttm;
  wire[7:0] tts;
@@ -7,34 +7,12 @@ reg reset,start;
 clock_gen mclk(clock);
 //(pixelClock,h_sync_signal,v_sync_signal,draw);
 //module mtimer(clk,reset,ss,th,tm,ts);
-mtimer timer(clock,reset,start,tth,ttm,tts);
-//mmsync vga_sync (clock,hs,vs,d);
-
+//mtimer timer(clock,reset,start,tth,ttm,tts);
+mmsync vga_sync (clock,hs,vs,d);
+//timeprinter(pixelclock,hsinc,vsinc,draw,th,tm,ts,pixel);
+timeprinter printer (clock,hs,vs,d,1,1,1,pix);
   initial begin
-    reset=1;
-    start=0;
-    #2;
-    reset=0;
-    start=1;
-    #2;
-    start=0;
-    #36000;
-    reset=1;
-    #2;
-    reset=0;
-    start=1;
-    #2;
-    start=0;
-    #2;
-     start=1;
-    #2;
-    start=0;
-    #10;
-     start=1;
-    #2;
-    start=0;
-    #500;
-
+    #100000
     $finish;
 
   end
