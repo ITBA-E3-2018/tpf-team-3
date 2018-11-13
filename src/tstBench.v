@@ -12,7 +12,7 @@ mmsync vga_sync (clock,hs,vs,d);
 //timeprinter(pixelclock,hsinc,vsinc,draw,th,tm,ts,pixel);
 timeprinter printer (clock,hs,vs,d,1,1,1,pix);
   initial begin
-    #100000
+    #1000000
     $finish;
 
   end

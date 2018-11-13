@@ -7,7 +7,7 @@ parameter levelNumber=5;
 parameter withNumber=3;
 parameter h_whith = 640;
 parameter v_whith = 480;
-parameter start2draw=1; //numero de filas que espero antes de escrivir el display
+parameter start2draw=35; //numero de filas que espero antes de escrivir el display
 parameter d0= 15'b111101101101111;
 parameter d1= 15'b001001001001001;
 parameter d2= 15'b111001111100111;
@@ -21,6 +21,7 @@ parameter d9=15'b111101111001001;
 parameter dpuntos=15'b000010000010000;
 reg once=1;
 reg endPrint=1;
+reg endVertical=1;
 reg [3:0] v_bitCount=0;//repetiziones verticales de cada bit
 reg [3:0] h_bitCount=0;//cuenta las repeticiones horizontales
 reg [3:0] printingPart=0;//contador de que parte de la line horizontal se esta imprimeinto
@@ -30,7 +31,7 @@ reg [3:0] levelPrinting=0;//nivel del numero que se imprime
 reg[15:0] h_count=0;//contador de columnas y tambien utilizado para contar pulsos de clocks
 reg[15:0] v_count=0;//contador de filas
 
-reg [3:0] thm=5;
+reg [3:0] thm=7;
 reg [3:0] thl=0;
 
 reg [3:0] tmm=3;
@@ -52,27 +53,17 @@ always @ (posedge pixelclock) begin
         digit[8]=d8;
         digit[9]=d9;
         digit[10]=dpuntos;
-        once=0;
-        $display("memoria");
-        $display("%b",digit[0]);
-        $display("%b",digit[1]);
-        $display("%b",digit[2]);
-        $display("%b",digit[3]);
-        $display("%b",digit[4]);
-        $display("%b",digit[5]);
-        $display("%b",digit[6]);
-        $display("%b",digit[7]);
-        $display("%b",digit[8]);
-        $display("%b",digit[9]);
-        $display("%b",digit[10]);
-        
+        once=0;        
     end
+    
     if((draw==1) && (v_count>(start2draw-1))&&(v_count<(start2draw+(boxSize*levelNumber)))&&(endPrint==1))begin
+        //$display("bitcount %d ,draw %b ,endprint %b ",v_bitCount,draw,endPrint);
         if(h_bitCount<boxSize)begin//si todavia no conte el ancho del pixel mantengo el valor
             pixel=digit[thm][(levelPrinting*withNumber)+printingPart];
             $write("%b",pixel);
             h_bitCount=h_bitCount+1;
            //$write("%d",(levelPrinting*withNumber)+printingPart);
+           //$write("%d",levelPrinting);
         end else begin
             if(printingPart<(withNumber-1))begin//TODO me parece que iria menos 1 en la condicion
                 printingPart=printingPart+1;
@@ -98,6 +89,8 @@ end
 always @ (posedge hsinc) begin
     v_count=v_count+1;//cada vez que hay un pulso de h sync se incremente al numero de fila
     $display (" ");
+
+    if((v_count>(start2draw-1))&&(v_count<(start2draw+(boxSize*levelNumber))))begin
      if(v_bitCount<boxSize)begin
        v_bitCount=v_bitCount+1;
         endPrint=1;
@@ -108,14 +101,14 @@ always @ (posedge hsinc) begin
             levelPrinting=levelPrinting+1;
         end else
         levelPrinting=0; 
-        
-
     end
+end
 end
 
 always @ (posedge vsinc) begin
-    v_count=0;//cada vez que hay un pulso de v sync se reinicia el contador de columnas
-   
+v_count=0;
+ levelPrinting=0;
+ v_bitCount=0;
 end
 
 
