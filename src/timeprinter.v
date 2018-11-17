@@ -27,6 +27,8 @@ reg [3:0] h_bitCount=0;//cuenta las repeticiones horizontales
 reg [3:0] printingPart=0;//contador de que parte de la line horizontal se esta imprimeinto
 reg [3:0] levelPrinting=0;//nivel del numero que se imprime
 
+reg cleanEnd=0;
+reg cleanEnd2=0;
 
 reg[15:0] h_count=0;//contador de columnas y tambien utilizado para contar pulsos de clocks
 reg[15:0] v_count=0;//contador de filas
@@ -55,7 +57,12 @@ always @ (posedge pixelclock) begin
         digit[10]=dpuntos;
         once=0;        
     end
-    
+    if((v_count>(start2draw-1))&&(v_count<(start2draw+(boxSize*levelNumber)))&&(hsinc==1))begin
+     if(v_bitCount<boxSize)begin
+         endPrint=1;
+     end
+     end
+
     if((draw==1) && (v_count>(start2draw-1))&&(v_count<(start2draw+(boxSize*levelNumber)))&&(endPrint==1))begin
         //$display("bitcount %d ,draw %b ,endprint %b ",v_bitCount,draw,endPrint);
         if(h_bitCount<boxSize)begin//si todavia no conte el ancho del pixel mantengo el valor
@@ -78,22 +85,29 @@ always @ (posedge pixelclock) begin
         
         end
         
-        h_count=h_count+1;
+       // h_count=h_count+1;
     end else begin
         h_count=0;
         pixel=0;
     end
-    
+   h_count=h_count+1;  
 end
 
 always @ (posedge hsinc) begin
     v_count=v_count+1;//cada vez que hay un pulso de h sync se incremente al numero de fila
     $display (" ");
-
+    
+    if(v_count>499)begin
+        v_count=0;
+        levelPrinting=0;
+        v_bitCount=0;
+    end
+    cleanEnd=0;
     if((v_count>(start2draw-1))&&(v_count<(start2draw+(boxSize*levelNumber))))begin
      if(v_bitCount<boxSize)begin
        v_bitCount=v_bitCount+1;
-        endPrint=1;
+       //cleanEnd=1;
+        //endPrint=1;
        //$display("%d",v_bitCount);
     end else begin
         v_bitCount=0;
@@ -106,9 +120,9 @@ end
 end
 
 always @ (posedge vsinc) begin
-v_count=0;
- levelPrinting=0;
- v_bitCount=0;
+ //v_count=0;
+// levelPrinting=0;
+// v_bitCount=0;
 end
 
 

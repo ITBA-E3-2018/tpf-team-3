@@ -10,9 +10,9 @@ clock_gen mclk(clock);
 //mtimer timer(clock,reset,start,tth,ttm,tts);
 mmsync vga_sync (clock,hs,vs,d);
 //timeprinter(pixelclock,hsinc,vsinc,draw,th,tm,ts,pixel);
-timeprinter printer (clock,hs,vs,d,1,1,1,pix);
+printvga printer (clock,hs,vs,d,1,1,1,pix);
   initial begin
-    #1000000
+    #150000
     $finish;
 
   end
