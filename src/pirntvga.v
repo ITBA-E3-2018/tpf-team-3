@@ -1,7 +1,12 @@
 module printvga(pixelclock,hsinc,vsinc,draw,th,tm,ts,pixel);
-input pixelclock,hsinc,vsinc,draw,th,tm,ts;
+input pixelclock,hsinc,vsinc,draw;
+input [7:0] th;
+input [7:0] tm;
+input [7:0] ts;
 reg [0:14] digit [0:10];
 output reg pixel;
+
+
 parameter boxSize=10;//cuantas veces se va a repetir cada pixel
 
 parameter h_whith = 800;//ancho efectivo de la pantalla
@@ -29,6 +34,7 @@ reg[15:0] v_count=0;//contador de fila
 reg [2:0] printingPart=0;//contador de que parte de la line horizontal se esta imprimeinto
 reg[7:0] hrepeat=0;
 reg once=1;
+
 
 always @ (posedge pixelclock) begin
     if(once==1)begin//cargo los numeros en un arreglo
@@ -92,8 +98,17 @@ always @ (posedge hsinc) begin
     end
     
     //$display (" ");
-
     end
-
+always @ (posedge vsinc) begin
+        dataToPlot[0]=(th/10);
+        dataToPlot[1]=(th%10);
+       // dataToPlot[2]=10;
+        dataToPlot[3]=(tm/10);
+        dataToPlot[4]=(tm%10);
+       // dataToPlot[5]=10;
+        dataToPlot[6]=(ts/10);
+        dataToPlot[7]=(ts%10);   
+    
+    end
 
 endmodule

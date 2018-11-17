@@ -2,17 +2,24 @@ module mtimer(clk,reset,ss,th,tm,ts);
 input clk,reset,ss;
 
 parameter modulo = 60;
+parameter divclock = 25000000;
 output reg[7:0] th=0;
 output reg[7:0] tm=0;
 output reg[7:0] ts=0;
 reg status=0;
+reg [30:0] div=0;
 
 always @ (posedge clk) begin
     if(ss==1)begin
         status=!status;
     end
     if(status==1)begin
+    if(div<divclock)begin
+        div=div+1;
+    end else begin
         ts=ts+1;
+    end
+        
         
         if(ts==(modulo))begin
             ts=0;
